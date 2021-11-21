@@ -1,11 +1,11 @@
 import axios from 'axios';
 import { getLogger } from '../core';
-import { ItemProps } from './ItemProps';
+import { StudentProps } from './StudentProps';
 
 const log = getLogger('itemApi');
 
 const baseUrl = 'localhost:3000';
-const itemUrl = `http://${baseUrl}/item`;
+const itemUrl = `http://${baseUrl}/student`;
 
 interface ResponseProps<T> {
   data: T;
@@ -30,22 +30,22 @@ const config = {
   }
 };
 
-export const getItems: () => Promise<ItemProps[]> = () => {
+export const getItems: () => Promise<StudentProps[]> = () => {
   return withLogs(axios.get(itemUrl, config), 'getItems');
 }
 
-export const createItem: (item: ItemProps) => Promise<ItemProps[]> = item => {
+export const createItem: (item: StudentProps) => Promise<StudentProps[]> = item => {
   return withLogs(axios.post(itemUrl, item, config), 'createItem');
 }
 
-export const updateItem: (item: ItemProps) => Promise<ItemProps[]> = item => {
+export const updateItem: (item: StudentProps) => Promise<StudentProps[]> = item => {
   return withLogs(axios.put(`${itemUrl}/${item.id}`, item, config), 'updateItem');
 }
 
 interface MessageData {
   event: string;
   payload: {
-    item: ItemProps;
+    item: StudentProps;
   };
 }
 

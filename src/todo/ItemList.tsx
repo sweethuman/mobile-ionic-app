@@ -14,12 +14,12 @@ import {
 import { add } from 'ionicons/icons';
 import Item from './Item';
 import { getLogger } from '../core';
-import { ItemContext } from './ItemProvider';
+import { StudentContext } from './StudentProvider';
 
 const log = getLogger('ItemList');
 
 const ItemList: React.FC<RouteComponentProps> = ({ history }) => {
-  const { items, fetching, fetchingError } = useContext(ItemContext);
+  const { items, fetching, fetchingError } = useContext(StudentContext);
   log('render');
   return (
     <IonPage>
@@ -32,8 +32,8 @@ const ItemList: React.FC<RouteComponentProps> = ({ history }) => {
         <IonLoading isOpen={fetching} message="Fetching items" />
         {items && (
           <IonList>
-            {items.map(({ id, text}) =>
-              <Item key={id} id={id} text={text} onEdit={id => history.push(`/item/${id}`)} />)}
+            {items.map(({ id, name, email, phoneNumber, photoUrl, faculty}) =>
+              <Item key={id} id={id} name={name} email={email} phoneNumber={phoneNumber} photoUrl={photoUrl} faculty={faculty} onEdit={id => history.push(`/item/${id}`)} />)}
           </IonList>
         )}
         {fetchingError && (

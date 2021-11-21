@@ -1,15 +1,18 @@
 import React from 'react';
-import { IonItem, IonLabel } from '@ionic/react';
-import { ItemProps } from './ItemProps';
+import {IonAvatar, IonItem, IonLabel} from '@ionic/react';
+import { StudentProps } from './StudentProps';
 
-interface ItemPropsExt extends ItemProps {
+interface ItemPropsExt extends StudentProps {
   onEdit: (id?: string) => void;
 }
 
-const Item: React.FC<ItemPropsExt> = ({ id, text, onEdit }) => {
+const Item: React.FC<ItemPropsExt> = ({ id, name, photoUrl, onEdit }) => {
   return (
     <IonItem onClick={() => onEdit(id)}>
-      <IonLabel>{text}</IonLabel>
+      <IonAvatar slot="start">
+        <img src={photoUrl} alt="profile pic" />
+      </IonAvatar>
+      <IonLabel>{name}</IonLabel>
     </IonItem>
   );
 };

@@ -1,20 +1,19 @@
 import React, { useCallback, useEffect, useReducer } from 'react';
-import PropTypes from 'prop-types';
 import { getLogger } from '../core';
-import { ItemProps } from './ItemProps';
+import { StudentProps } from './StudentProps';
 import { createItem, getItems, newWebSocket, updateItem } from './itemApi';
 
 const log = getLogger('ItemProvider');
 
-type SaveItemFn = (item: ItemProps) => Promise<any>;
+type SaveStudentFn = (item: StudentProps) => Promise<any>;
 
-export interface ItemsState {
-  items?: ItemProps[],
+export interface StudentState {
+  items?: StudentProps[],
   fetching: boolean,
   fetchingError?: Error | null,
   saving: boolean,
   savingError?: Error | null,
-  saveItem?: SaveItemFn,
+  saveItem?: SaveStudentFn,
 }
 
 interface ActionProps {
@@ -22,7 +21,7 @@ interface ActionProps {
   payload?: any,
 }
 
-const initialState: ItemsState = {
+const initialState: StudentState = {
   fetching: false,
   saving: false,
 };
@@ -34,7 +33,7 @@ const SAVE_ITEM_STARTED = 'SAVE_ITEM_STARTED';
 const SAVE_ITEM_SUCCEEDED = 'SAVE_ITEM_SUCCEEDED';
 const SAVE_ITEM_FAILED = 'SAVE_ITEM_FAILED';
 
-const reducer: (state: ItemsState, action: ActionProps) => ItemsState =
+const reducer: (state: StudentState, action: ActionProps) => StudentState =
   (state, { type, payload }) => {
     switch (type) {
       case FETCH_ITEMS_STARTED:
@@ -62,24 +61,23 @@ const reducer: (state: ItemsState, action: ActionProps) => ItemsState =
     }
   };
 
-export const ItemContext = React.createContext<ItemsState>(initialState);
+export const StudentContext = React.createContext<StudentState>(initialState);
 
-interface ItemProviderProps {
-  children: PropTypes.ReactNodeLike,
+interface StudentProviderProps {
 }
 
-export const ItemProvider: React.FC<ItemProviderProps> = ({ children }) => {
+export const StudentProvider: React.FC<StudentProviderProps> = ({ children }) => {
   const [state, dispatch] = useReducer(reducer, initialState);
   const { items, fetching, fetchingError, saving, savingError } = state;
   useEffect(getItemsEffect, []);
   useEffect(wsEffect, []);
-  const saveItem = useCallback<SaveItemFn>(saveItemCallback, []);
+  const saveItem = useCallback<SaveStudentFn>(saveItemCallback, []);
   const value = { items, fetching, fetchingError, saving, savingError, saveItem };
   log('returns');
   return (
-    <ItemContext.Provider value={value}>
+    <StudentContext.Provider value={value}>
       {children}
-    </ItemContext.Provider>
+    </StudentContext.Provider>
   );
 
   function getItemsEffect() {
@@ -105,7 +103,7 @@ export const ItemProvider: React.FC<ItemProviderProps> = ({ children }) => {
     }
   }
 
-  async function saveItemCallback(item: ItemProps) {
+  async function saveItemCallback(item: StudentProps) {
     try {
       log('saveItem started');
       dispatch({ type: SAVE_ITEM_STARTED });

@@ -22,11 +22,11 @@ import '@ionic/react/css/display.css';
 
 /* Theme variables */
 import './theme/variables.css';
-import { ItemProvider } from './todo/ItemProvider';
+import { StudentProvider } from './todo/StudentProvider';
 
 const App: React.FC = () => (
   <IonApp>
-    <ItemProvider>
+    <StudentProvider>
       <IonReactRouter>
         <IonRouterOutlet>
           <Route path="/items" component={ItemList} exact={true} />
@@ -35,7 +35,7 @@ const App: React.FC = () => (
           <Route exact path="/" render={() => <Redirect to="/items" />} />
         </IonRouterOutlet>
       </IonReactRouter>
-    </ItemProvider>
+    </StudentProvider>
   </IonApp>
 );
 
