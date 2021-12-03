@@ -1,3 +1,12 @@
+export const EmptyStudent = {
+  name: "",
+  faculty: "",
+  email: "",
+  phoneNumber: "",
+  photoUrl: ""
+};
+
+
 export interface StudentProps {
   id?: string;
   name: string;
