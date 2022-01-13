@@ -1,10 +1,10 @@
 import axios from 'axios';
-import { getLogger } from '../core';
+import {baseUrl, getLogger} from '../core';
 import { StudentProps } from './StudentProps';
 
 const log = getLogger('itemApi');
 
-const baseUrl = 'localhost:8083';
+
 const itemUrl = `http://${baseUrl}/student`;
 
 interface ResponseProps<T> {
