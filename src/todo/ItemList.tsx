@@ -1,29 +1,33 @@
-import React, { useContext } from 'react';
-import { RouteComponentProps } from 'react-router';
+import React, {useContext, useState} from 'react';
+import {RouteComponentProps} from 'react-router';
 import {
+  IonButton,
   IonButtons,
   IonContent,
   IonFab,
   IonFabButton,
   IonHeader,
   IonIcon,
-  IonList, IonLoading,
+  IonLabel,
+  IonList,
+  IonLoading,
   IonPage,
+  IonSearchbar,
   IonTitle,
-  IonToolbar,
-  IonBackButton, IonButton, IonLabel
+  IonToolbar
 } from '@ionic/react';
-import { add } from 'ionicons/icons';
+import {add} from 'ionicons/icons';
 import Item from './Item';
-import { getLogger } from '../core';
-import { StudentContext } from './StudentProvider';
+import {getLogger} from '../core';
+import {StudentContext} from './StudentProvider';
 import {AuthContext} from "../auth";
 import {useNetwork} from "../hooks/useNetwork";
 
 const log = getLogger('ItemList');
 
-const ItemList: React.FC<RouteComponentProps> = ({ history }) => {
-  const { items, fetching, fetchingError } = useContext(StudentContext);
+const ItemList: React.FC<RouteComponentProps> = ({history}) => {
+  const [searchText, setSearchText] = useState("");
+  const {items, fetching, fetchingError} = useContext(StudentContext);
   const {logout} = useContext(AuthContext);
   const {networkStatus} = useNetwork()
   log('render');
@@ -32,18 +36,29 @@ const ItemList: React.FC<RouteComponentProps> = ({ history }) => {
       <IonHeader>
         <IonToolbar>
           <IonTitle>Student List</IonTitle>
+          <IonButtons slot="start">
+            <IonSearchbar value={searchText} onIonChange={e => setSearchText(e.detail.value!)} animated/>
+          </IonButtons>
           <IonButtons slot="end">
-            <IonLabel>{networkStatus.connected ? "Network online": "Network offline"}</IonLabel>
+            <IonLabel>{networkStatus.connected ? "Network online" : "Network offline"}</IonLabel>
             <IonButton onClick={() => logout?.()}>Log Out</IonButton>
           </IonButtons>
         </IonToolbar>
       </IonHeader>
       <IonContent>
-        <IonLoading isOpen={fetching} message="Fetching items" />
+        <IonLoading isOpen={fetching} message="Fetching items"/>
         {items && (
           <IonList>
-            {items.map(({ id, name, email, phoneNumber, photoUrl, faculty}) =>
-              <Item key={id} id={id} name={name} email={email} phoneNumber={phoneNumber} photoUrl={photoUrl} faculty={faculty} onEdit={id => history.push(`/item/${id}`)} />)}
+            {items.filter((item) => item.name.toLowerCase().includes(searchText)).map(({
+                                                                                         id,
+                                                                                         name,
+                                                                                         email,
+                                                                                         phoneNumber,
+                                                                                         photoUrl,
+                                                                                         faculty
+                                                                                       }) =>
+              <Item key={id} id={id} name={name} email={email} phoneNumber={phoneNumber} photoUrl={photoUrl}
+                    faculty={faculty} onEdit={id => history.push(`/item/${id}`)}/>)}
           </IonList>
         )}
         {fetchingError && (
@@ -51,7 +66,7 @@ const ItemList: React.FC<RouteComponentProps> = ({ history }) => {
         )}
         <IonFab vertical="bottom" horizontal="end" slot="fixed">
           <IonFabButton onClick={() => history.push('/item')}>
-            <IonIcon icon={add} />
+            <IonIcon icon={add}/>
           </IonFabButton>
         </IonFab>
       </IonContent>
