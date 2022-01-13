@@ -1,7 +1,7 @@
-import React, {useCallback, useContext, useEffect, useReducer} from 'react';
+import React, {useCallback, useContext, useEffect, useReducer, useState} from 'react';
 import {getLogger} from '../core';
 import {StudentProps} from './StudentProps';
-import {createItem, getItems, updateItem} from './itemApi';
+import {createItem, getAllFilters, getItems, updateItem} from './itemApi';
 import {io} from "socket.io-client";
 import {AuthContext} from "../auth";
 
@@ -16,6 +16,9 @@ export interface StudentState {
   saving: boolean,
   savingError?: Error | null,
   saveItem?: SaveStudentFn,
+  allFilters: string[],
+  filter: string,
+  setFilter?: Function,
 }
 
 interface ActionProps {
@@ -26,6 +29,8 @@ interface ActionProps {
 const initialState: StudentState = {
   fetching: false,
   saving: false,
+  filter: "",
+  allFilters: [],
 };
 
 const FETCH_ITEMS_STARTED = 'FETCH_ITEMS_STARTED';
@@ -71,12 +76,14 @@ interface StudentProviderProps {
 
 export const StudentProvider: React.FC<StudentProviderProps> = ({children}) => {
   const [state, dispatch] = useReducer(reducer, initialState);
+  const [filter, setFilter] = useState<string>("");
+  const [allFilters, setAllFilters] = useState<string[]>([]);
   const {items, fetching, fetchingError, saving, savingError} = state;
   const {token} = useContext(AuthContext);
-  useEffect(getItemsEffect, [token]);
+  useEffect(getItemsEffect, [token, filter]);
   useEffect(wsEffect, [token]);
   const saveItem = useCallback<SaveStudentFn>(saveItemCallback, [token]);
-  const value = {items, fetching, fetchingError, saving, savingError, saveItem};
+  const value = {items, fetching, fetchingError, saving, savingError, filter, setFilter, saveItem, allFilters};
   log('returns');
   return (
     <StudentContext.Provider value={value}>
@@ -95,7 +102,9 @@ export const StudentProvider: React.FC<StudentProviderProps> = ({children}) => {
       try {
         log('fetchItems started');
         dispatch({type: FETCH_ITEMS_STARTED});
-        const items = await getItems(token);
+        const items = await getItems(filter, token);
+        const allFilters = await getAllFilters(token);
+        setAllFilters(allFilters);
         log('fetchItems succeeded');
         if (!canceled) {
           dispatch({type: FETCH_ITEMS_SUCCEEDED, payload: {items}});

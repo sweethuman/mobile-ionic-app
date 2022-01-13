@@ -36,8 +36,12 @@ const authConfig = (token?: string) => ({
   },
 });
 
-export function getItems(token: string): Promise<StudentProps[]> {
-  return withLogs(axios.get(itemUrl, authConfig(token)), 'getItems');
+export function getItems(filter: string, token: string): Promise<StudentProps[]> {
+  return withLogs(axios.get(`${itemUrl}?filter=${filter}`, authConfig(token)), 'getItems');
+}
+
+export function getAllFilters( token: string): Promise<string[]> {
+  return withLogs(axios.get( `http://${baseUrl}/studentfilter`, authConfig(token)), 'getAllFilters');
 }
 
 export const createItem: (item: StudentProps, token: string) => Promise<StudentProps[]> = (item, token) => {

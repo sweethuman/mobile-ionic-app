@@ -12,11 +12,11 @@ import {
   IonList,
   IonLoading,
   IonPage,
-  IonSearchbar,
+  IonSearchbar, IonSelect, IonSelectOption,
   IonTitle,
   IonToolbar
 } from '@ionic/react';
-import {add} from 'ionicons/icons';
+import {add, filter} from 'ionicons/icons';
 import Item from './Item';
 import {getLogger} from '../core';
 import {StudentContext} from './StudentProvider';
@@ -27,7 +27,7 @@ const log = getLogger('ItemList');
 
 const ItemList: React.FC<RouteComponentProps> = ({history}) => {
   const [searchText, setSearchText] = useState("");
-  const {items, fetching, fetchingError} = useContext(StudentContext);
+  const {items, fetching, fetchingError, filter, setFilter, allFilters} = useContext(StudentContext);
   const {logout} = useContext(AuthContext);
   const {networkStatus} = useNetwork()
   log('render');
@@ -38,6 +38,17 @@ const ItemList: React.FC<RouteComponentProps> = ({history}) => {
           <IonTitle>Student List</IonTitle>
           <IonButtons slot="start">
             <IonSearchbar value={searchText} onIonChange={e => setSearchText(e.detail.value!)} animated/>
+            <IonSelect
+              value={filter}
+              placeholder="Select Filter"
+              onIonChange={(e) => setFilter && setFilter(e.detail.value)}
+            >
+              {allFilters?.map((filter) => (
+                <IonSelectOption key={filter} value={filter}>
+                  {filter}
+                </IonSelectOption>
+              ))}
+            </IonSelect>
           </IonButtons>
           <IonButtons slot="end">
             <IonLabel>{networkStatus.connected ? "Network online" : "Network offline"}</IonLabel>
