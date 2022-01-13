@@ -23,6 +23,7 @@
     "react-router": "^5.1.2",
     "react-router-dom": "^5.1.2",
     "react-scripts": "3.4.0",
+    "socket.io-client": "^4.4.1",
     "typescript": "3.8.3",
     "use-immer": "^0.6.0"
   },
@@ -50,5 +51,9 @@
   "devDependencies": {
     "@capacitor/cli": "2.4.1"
   },
-  "description": "An Ionic project"
+  "description": "An Ionic project",
+  "volta": {
+    "node": "16.13.2",
+    "npm": "8.3.0"
+  }
 }

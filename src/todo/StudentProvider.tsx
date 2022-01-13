@@ -2,6 +2,7 @@ import React, { useCallback, useEffect, useReducer } from 'react';
 import { getLogger } from '../core';
 import { StudentProps } from './StudentProps';
 import { createItem, getItems, newWebSocket, updateItem } from './itemApi';
+import {io} from "socket.io-client";
 
 const log = getLogger('ItemProvider');
 
@@ -35,6 +36,7 @@ const SAVE_ITEM_FAILED = 'SAVE_ITEM_FAILED';
 
 const reducer: (state: StudentState, action: ActionProps) => StudentState =
   (state, { type, payload }) => {
+  console.log(type, payload);
     switch (type) {
       case FETCH_ITEMS_STARTED:
         return { ...state, fetching: true, fetchingError: null };
@@ -119,20 +121,33 @@ export const StudentProvider: React.FC<StudentProviderProps> = ({ children }) =>
   function wsEffect() {
     let canceled = false;
     log('wsEffect - connecting');
-    const closeWebSocket = newWebSocket(message => {
+    // const closeWebSocket = newWebSocket(message => {
+    //   if (canceled) {
+    //     return;
+    //   }
+    //   const { event, payload: { item }} = message;
+    //   log(`ws message, item ${event}`);
+    //   if (event === 'created' || event === 'updated') {
+    //     dispatch({ type: SAVE_ITEM_SUCCEEDED, payload: { item } });
+    //   }
+    // });
+    const socket = io("ws://localhost:8083");
+    socket.on("student", message => {
       if (canceled) {
         return;
       }
       const { event, payload: { item }} = message;
+      console.log("event", event, item);
       log(`ws message, item ${event}`);
       if (event === 'created' || event === 'updated') {
         dispatch({ type: SAVE_ITEM_SUCCEEDED, payload: { item } });
       }
-    });
+    })
     return () => {
       log('wsEffect - disconnecting');
       canceled = true;
-      closeWebSocket();
+      // closeWebSocket();
+      socket.close();
     }
   }
 };

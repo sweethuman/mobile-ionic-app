@@ -4,7 +4,7 @@ import { StudentProps } from './StudentProps';
 
 const log = getLogger('itemApi');
 
-const baseUrl = 'localhost:3000';
+const baseUrl = 'localhost:8083';
 const itemUrl = `http://${baseUrl}/student`;
 
 interface ResponseProps<T> {
