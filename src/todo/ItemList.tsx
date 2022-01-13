@@ -11,19 +11,21 @@ import {
   IonPage,
   IonTitle,
   IonToolbar,
-  IonBackButton, IonButton
+  IonBackButton, IonButton, IonLabel
 } from '@ionic/react';
 import { add } from 'ionicons/icons';
 import Item from './Item';
 import { getLogger } from '../core';
 import { StudentContext } from './StudentProvider';
 import {AuthContext} from "../auth";
+import {useNetwork} from "../hooks/useNetwork";
 
 const log = getLogger('ItemList');
 
 const ItemList: React.FC<RouteComponentProps> = ({ history }) => {
   const { items, fetching, fetchingError } = useContext(StudentContext);
   const {logout} = useContext(AuthContext);
+  const {networkStatus} = useNetwork()
   log('render');
   return (
     <IonPage>
@@ -31,6 +33,7 @@ const ItemList: React.FC<RouteComponentProps> = ({ history }) => {
         <IonToolbar>
           <IonTitle>Student List</IonTitle>
           <IonButtons slot="end">
+            <IonLabel>{networkStatus.connected ? "Network online": "Network offline"}</IonLabel>
             <IonButton onClick={() => logout?.()}>Log Out</IonButton>
           </IonButtons>
         </IonToolbar>
