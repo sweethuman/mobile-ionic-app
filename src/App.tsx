@@ -27,9 +27,9 @@ import {AuthProvider, Login, PrivateRoute} from "./auth";
 
 const App: React.FC = () => (
   <IonApp>
-    <AuthProvider>
-      <IonReactRouter>
-        <IonRouterOutlet>
+    <IonReactRouter>
+      <IonRouterOutlet>
+        <AuthProvider>
           <Route path="/login" component={Login}/>
           <StudentProvider>
             <PrivateRoute path="/items" component={ItemList} exact={true}/>
@@ -37,9 +37,9 @@ const App: React.FC = () => (
             <PrivateRoute path="/item/:id" component={ItemEdit} exact={true}/>
             <PrivateRoute exact path="/" component={() => <Redirect to="/items"/>}/>
           </StudentProvider>
-        </IonRouterOutlet>
-      </IonReactRouter>
-    </AuthProvider>
+        </AuthProvider>
+      </IonRouterOutlet>
+    </IonReactRouter>
   </IonApp>
 );
 

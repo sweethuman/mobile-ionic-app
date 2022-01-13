@@ -1,6 +1,7 @@
 import React, { useContext } from 'react';
 import { RouteComponentProps } from 'react-router';
 import {
+  IonButtons,
   IonContent,
   IonFab,
   IonFabButton,
@@ -9,23 +10,29 @@ import {
   IonList, IonLoading,
   IonPage,
   IonTitle,
-  IonToolbar
+  IonToolbar,
+  IonBackButton, IonButton
 } from '@ionic/react';
 import { add } from 'ionicons/icons';
 import Item from './Item';
 import { getLogger } from '../core';
 import { StudentContext } from './StudentProvider';
+import {AuthContext} from "../auth";
 
 const log = getLogger('ItemList');
 
 const ItemList: React.FC<RouteComponentProps> = ({ history }) => {
   const { items, fetching, fetchingError } = useContext(StudentContext);
+  const {logout} = useContext(AuthContext);
   log('render');
   return (
     <IonPage>
       <IonHeader>
         <IonToolbar>
           <IonTitle>Student List</IonTitle>
+          <IonButtons slot="end">
+            <IonButton onClick={() => logout?.()}>Log Out</IonButton>
+          </IonButtons>
         </IonToolbar>
       </IonHeader>
       <IonContent>
