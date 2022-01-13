@@ -1,6 +1,6 @@
 import axios from 'axios';
 import {baseUrl, getLogger} from '../core';
-import { StudentProps } from './StudentProps';
+import {StudentProps} from './StudentProps';
 
 const log = getLogger('itemApi');
 
@@ -29,17 +29,23 @@ const config = {
     'Content-Type': 'application/json'
   }
 };
+const authConfig = (token?: string) => ({
+  headers: {
+    'Content-Type': 'application/json',
+    Authorization: `Bearer ${token}`,
+  },
+});
 
-export const getItems: () => Promise<StudentProps[]> = () => {
-  return withLogs(axios.get(itemUrl, config), 'getItems');
+export function getItems(token: string): Promise<StudentProps[]> {
+  return withLogs(axios.get(itemUrl, authConfig(token)), 'getItems');
 }
 
-export const createItem: (item: StudentProps) => Promise<StudentProps[]> = item => {
-  return withLogs(axios.post(itemUrl, item, config), 'createItem');
+export const createItem: (item: StudentProps, token: string) => Promise<StudentProps[]> = (item, token) => {
+  return withLogs(axios.post(itemUrl, item, authConfig(token)), 'createItem');
 }
 
-export const updateItem: (item: StudentProps) => Promise<StudentProps[]> = item => {
-  return withLogs(axios.put(`${itemUrl}/${item.id}`, item, config), 'updateItem');
+export const updateItem: (item: StudentProps, token: string) => Promise<StudentProps[]> = (item, token) => {
+  return withLogs(axios.put(`${itemUrl}/${item.id}`, item, authConfig(token)), 'updateItem');
 }
 
 interface MessageData {
