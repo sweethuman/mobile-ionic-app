@@ -34,8 +34,8 @@ interface ItemEditProps extends RouteComponentProps<{
 
 const ItemEdit: React.FC<ItemEditProps> = ({history, match}) => {
   const [openMap, setOpenMap] = useState(false)
-  const [lat, setLat] = useState(46.7524289);
-  const [lng, setLng] = useState(23.5872008);
+  const [lat, setLat] = useState(45.65003946990994);
+  const [lng, setLng] = useState(25.617588820284645);
   const {items, saving, savingError, saveItem} = useContext(StudentContext);
   const [item, setItem] = useImmer<StudentProps>(EmptyStudent);
   const {takePhoto} = usePhotoGallery();

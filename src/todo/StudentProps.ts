@@ -4,8 +4,8 @@ export const EmptyStudent = {
   email: "",
   phoneNumber: "",
   photoUrl: "",
-  lat: 46.7524289,
-  lng: 23.5872008
+  lat: 45.65003946990994,
+  lng: 25.617588820284645
 };
 
 
