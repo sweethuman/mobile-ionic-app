@@ -103,15 +103,17 @@ const ItemEdit: React.FC<ItemEditProps> = ({history, match}) => {
           </IonItem>
           <IonButton onClick={() => setOpenMap(!openMap)}>Toggle Map</IonButton>
           {openMap &&
-              <MyMap
-                  lat={lat}
-                  lng={lng}
-                  onMapClick={(e: any) => {
+              <div style={{height: "400px"}}>
+                  <MyMap
+                      lat={lat}
+                      lng={lng}
+                      onMapClick={(e: any) => {
 
-                    setLat(e.latLng.lat());
-                    setLng(e.latLng.lng());
-                  }}
-              />}
+                        setLat(e.latLng.lat());
+                        setLng(e.latLng.lng());
+                      }}
+                  />
+              </div>}
         </IonList>
         <IonFab vertical="bottom" horizontal="center" slot="fixed">
           <IonFabButton

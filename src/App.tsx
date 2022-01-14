@@ -24,6 +24,7 @@ import '@ionic/react/css/display.css';
 import './theme/variables.css';
 import {StudentProvider} from './todo/StudentProvider';
 import {AuthProvider, Login, PrivateRoute} from "./auth";
+import {MapPage} from "./map/MapPage";
 
 const App: React.FC = () => (
   <IonApp>
@@ -35,6 +36,7 @@ const App: React.FC = () => (
             <PrivateRoute path="/items" component={ItemList} exact={true}/>
             <PrivateRoute path="/item" component={ItemEdit} exact={true}/>
             <PrivateRoute path="/item/:id" component={ItemEdit} exact={true}/>
+            <PrivateRoute path="/map/:lat/:lng" component={MapPage} exact={true}/>
             <PrivateRoute exact path="/" component={() => <Redirect to="/items"/>}/>
           </StudentProvider>
         </AuthProvider>

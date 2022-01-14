@@ -73,7 +73,7 @@ const ItemList: React.FC<RouteComponentProps> = ({history}) => {
               lat, lng
                                                                                        }) =>
               <Item key={id} id={id} name={name} email={email} phoneNumber={phoneNumber} photoUrl={photoUrl}
-                    faculty={faculty} lat={lat} lng={lng} onEdit={id => history.push(`/item/${id}`)}/>)}
+                    faculty={faculty} lat={lat} lng={lng} onEdit={id => history.push(`/item/${id}`)} onMap={() =>history.push(`/map/${lat}/${lng}`)}/> )}
           </IonList>
         )}
         {fetchingError && (
