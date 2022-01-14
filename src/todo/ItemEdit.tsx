@@ -1,4 +1,4 @@
-import React, {useContext, useEffect} from 'react';
+import React, {useCallback, useContext, useEffect, useState} from 'react';
 import {
   IonButton,
   IonButtons,
@@ -23,6 +23,7 @@ import {EmptyStudent, StudentProps} from './StudentProps';
 import {useImmer} from "use-immer";
 import {camera} from "ionicons/icons";
 import {usePhotoGallery} from "../hooks/usePhotoGallery";
+import {MyMap} from "../map/MyMap";
 
 const log = getLogger('ItemEdit');
 
@@ -32,6 +33,9 @@ interface ItemEditProps extends RouteComponentProps<{
 }
 
 const ItemEdit: React.FC<ItemEditProps> = ({history, match}) => {
+  const [openMap, setOpenMap] = useState(false)
+  const [lat, setLat] = useState(46.7524289);
+  const [lng, setLng] = useState(23.5872008);
   const {items, saving, savingError, saveItem} = useContext(StudentContext);
   const [item, setItem] = useImmer<StudentProps>(EmptyStudent);
   const {takePhoto} = usePhotoGallery();
@@ -41,13 +45,17 @@ const ItemEdit: React.FC<ItemEditProps> = ({history, match}) => {
     const item = items?.find(it => it.id === routeId);
     if (item) {
       setItem(item);
+      setLng(item.lng)
+      setLat(item.lat)
     } else {
       setItem(EmptyStudent);
+      setLng(EmptyStudent.lng)
+      setLat(EmptyStudent.lat)
     }
   }, [match.params.id, items]);
-  const handleSave = () => {
-    saveItem && saveItem(item).then(() => history.goBack());
-  };
+  const handleSave = useCallback(() => {
+    saveItem && saveItem({...item, lat, lng}).then(() => history.goBack());
+  }, [item, lat, lng, saveItem]);
   log('render');
   return (
     <IonPage>
@@ -93,6 +101,17 @@ const ItemEdit: React.FC<ItemEditProps> = ({history, match}) => {
               draft.photoUrl = e.detail.value || ""
             })}/>
           </IonItem>
+          <IonButton onClick={() => setOpenMap(!openMap)}>Toggle Map</IonButton>
+          {openMap &&
+              <MyMap
+                  lat={lat}
+                  lng={lng}
+                  onMapClick={(e: any) => {
+
+                    setLat(e.latLng.lat());
+                    setLng(e.latLng.lng());
+                  }}
+              />}
         </IonList>
         <IonFab vertical="bottom" horizontal="center" slot="fixed">
           <IonFabButton
