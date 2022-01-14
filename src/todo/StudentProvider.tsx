@@ -19,6 +19,8 @@ export interface StudentState {
   allFilters: string[],
   filter: string,
   setFilter?: Function,
+  page: number,
+  setPage?: Function,
 }
 
 interface ActionProps {
@@ -31,6 +33,7 @@ const initialState: StudentState = {
   saving: false,
   filter: "",
   allFilters: [],
+  page: 0,
 };
 
 const FETCH_ITEMS_STARTED = 'FETCH_ITEMS_STARTED';
@@ -77,13 +80,14 @@ interface StudentProviderProps {
 export const StudentProvider: React.FC<StudentProviderProps> = ({children}) => {
   const [state, dispatch] = useReducer(reducer, initialState);
   const [filter, setFilter] = useState<string>("");
+  const [page, setPage] = useState<number>(0);
   const [allFilters, setAllFilters] = useState<string[]>([]);
   const {items, fetching, fetchingError, saving, savingError} = state;
   const {token} = useContext(AuthContext);
-  useEffect(getItemsEffect, [token, filter]);
+  useEffect(getItemsEffect, [token, filter, page]);
   useEffect(wsEffect, [token]);
   const saveItem = useCallback<SaveStudentFn>(saveItemCallback, [token]);
-  const value = {items, fetching, fetchingError, saving, savingError, filter, setFilter, saveItem, allFilters};
+  const value = {items, fetching, fetchingError, saving, savingError, filter, setFilter, saveItem, allFilters, page, setPage};
   log('returns');
   return (
     <StudentContext.Provider value={value}>
@@ -102,7 +106,7 @@ export const StudentProvider: React.FC<StudentProviderProps> = ({children}) => {
       try {
         log('fetchItems started');
         dispatch({type: FETCH_ITEMS_STARTED});
-        const items = await getItems(filter, token);
+        const items = await getItems(filter, page, token);
         const allFilters = await getAllFilters(token);
         setAllFilters(allFilters);
         log('fetchItems succeeded');

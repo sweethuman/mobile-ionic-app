@@ -12,11 +12,12 @@ import {
   IonList,
   IonLoading,
   IonPage,
-  IonSearchbar, IonSelect, IonSelectOption,
-  IonTitle,
+  IonSearchbar,
+  IonSelect,
+  IonSelectOption,
   IonToolbar
 } from '@ionic/react';
-import {add, filter} from 'ionicons/icons';
+import {add} from 'ionicons/icons';
 import Item from './Item';
 import {getLogger} from '../core';
 import {StudentContext} from './StudentProvider';
@@ -27,7 +28,7 @@ const log = getLogger('ItemList');
 
 const ItemList: React.FC<RouteComponentProps> = ({history}) => {
   const [searchText, setSearchText] = useState("");
-  const {items, fetching, fetchingError, filter, setFilter, allFilters} = useContext(StudentContext);
+  const {items, fetching, fetchingError, filter, setFilter, allFilters, page, setPage} = useContext(StudentContext);
   const {logout} = useContext(AuthContext);
   const {networkStatus} = useNetwork()
   log('render');
@@ -35,7 +36,6 @@ const ItemList: React.FC<RouteComponentProps> = ({history}) => {
     <IonPage>
       <IonHeader>
         <IonToolbar>
-          <IonTitle>Student List</IonTitle>
           <IonButtons slot="start">
             <IonSearchbar value={searchText} onIonChange={e => setSearchText(e.detail.value!)} animated/>
             <IonSelect
@@ -49,6 +49,9 @@ const ItemList: React.FC<RouteComponentProps> = ({history}) => {
                 </IonSelectOption>
               ))}
             </IonSelect>
+            <IonButton disabled={page <= 0} onClick={() => setPage?.(page - 1)}>Previous Page</IonButton>
+            <IonLabel>{page}</IonLabel>
+            <IonButton  onClick={() => setPage?.(page + 1)}>Next Page</IonButton>
           </IonButtons>
           <IonButtons slot="end">
             <IonLabel>{networkStatus.connected ? "Network online" : "Network offline"}</IonLabel>
