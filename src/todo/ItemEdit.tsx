@@ -3,7 +3,10 @@ import {
   IonButton,
   IonButtons,
   IonContent,
+  IonFab,
+  IonFabButton,
   IonHeader,
+  IonIcon,
   IonInput,
   IonItem,
   IonLabel,
@@ -18,6 +21,8 @@ import {StudentContext} from './StudentProvider';
 import {RouteComponentProps} from 'react-router';
 import {EmptyStudent, StudentProps} from './StudentProps';
 import {useImmer} from "use-immer";
+import {camera} from "ionicons/icons";
+import {usePhotoGallery} from "../hooks/usePhotoGallery";
 
 const log = getLogger('ItemEdit');
 
@@ -29,6 +34,7 @@ interface ItemEditProps extends RouteComponentProps<{
 const ItemEdit: React.FC<ItemEditProps> = ({history, match}) => {
   const {items, saving, savingError, saveItem} = useContext(StudentContext);
   const [item, setItem] = useImmer<StudentProps>(EmptyStudent);
+  const {takePhoto} = usePhotoGallery();
   useEffect(() => {
     log('useEffect');
     const routeId = match.params.id || '';
@@ -88,6 +94,22 @@ const ItemEdit: React.FC<ItemEditProps> = ({history, match}) => {
             })}/>
           </IonItem>
         </IonList>
+        <IonFab vertical="bottom" horizontal="center" slot="fixed">
+          <IonFabButton
+            onClick={async () => {
+              try {
+                const image = await takePhoto();
+                console.log("setting image")
+                setItem(draft => {
+                  draft.photoUrl = image;
+                })
+              } catch (e) {
+              }
+            }}
+          >
+            <IonIcon icon={camera}/>
+          </IonFabButton>
+        </IonFab>
         <IonLoading isOpen={saving}/>
         {savingError && (
           <div>{savingError.message || 'Failed to save item'}</div>
